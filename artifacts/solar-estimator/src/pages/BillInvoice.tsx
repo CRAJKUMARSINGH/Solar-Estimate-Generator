@@ -107,7 +107,7 @@ export function BillInvoice() {
     gstPercent: 12,
     items: [newItem()],
     remarks: "",
-    bankName: "State Bank of India",
+    bankName: "Bank of Baroda",
     accountNo: "",
     ifscCode: "",
     accountHolder: COMPANY.name,

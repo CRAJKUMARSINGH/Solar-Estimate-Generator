@@ -10,10 +10,10 @@ const COMPANY = {
   prince: "+91 97727 13293",
   bank: {
     accountHolder: "PLENOX ENTERPRISES LLP",
-    bankName: "State Bank of India (SBI)",
+    bankName: "Bank of Baroda",
     accountNo: "——————————",
-    ifscCode: "——————",
-    branch: "Arthuna Branch, Banswara, Rajasthan",
+    ifscCode: "BARB0GARHIX",
+    branch: "Garhi Branch, Banswara, Rajasthan",
   },
 };
 
