@@ -1,6 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { EstimateData } from "../lib/types";
 import { calculateQuote, formatCurrency, formatNumber } from "../lib/calculations";
+import { PlenoxLogo } from "./PlenoxLogo";
+import { CoverLetter } from "./CoverLetter";
 
 const COMPANY = {
   name: "PLENOX ENTERPRISES LLP",
@@ -29,6 +31,7 @@ interface Props {
 
 export function QuoteOutput({ data, onBack }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
+  const [showCoverLetter, setShowCoverLetter] = useState(false);
   const quote = calculateQuote(data);
   const { customer, system } = data;
 
@@ -167,8 +170,19 @@ export function QuoteOutput({ data, onBack }: Props) {
           </svg>
           WhatsApp Share
         </button>
+        <button
+          onClick={() => setShowCoverLetter(v => !v)}
+          className={`px-5 py-2 text-sm rounded-lg font-semibold flex items-center gap-2 transition-colors ${showCoverLetter ? "bg-blue-600 text-white hover:bg-blue-700" : "border border-blue-400 text-blue-600 hover:bg-blue-50"}`}>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          {showCoverLetter ? "Hide Cover Letter" : "Cover Letter"}
+        </button>
         <span className="text-xs text-gray-400">Opens WhatsApp with ready message</span>
       </div>
+
+      {/* Cover Letter */}
+      {showCoverLetter && <CoverLetter data={data} calc={quote} />}
 
       {/* Printable document */}
       <div ref={printRef} className="print-page bg-white shadow-xl rounded-xl overflow-hidden border border-gray-200 max-w-4xl mx-auto">
@@ -181,9 +195,7 @@ export function QuoteOutput({ data, onBack }: Props) {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg className="w-7 h-7 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L13.5 8.5H20L14.5 12.5L16.5 19L12 15L7.5 19L9.5 12.5L4 8.5H10.5L12 2Z" />
-                  </svg>
+                  <PlenoxLogo size={36} variant="color" />
                 </div>
                 <div>
                   <h1 className="text-xl font-black tracking-tight leading-tight">{COMPANY.name}</h1>

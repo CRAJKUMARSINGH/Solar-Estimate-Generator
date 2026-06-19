@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { calculateQuote, formatCurrency, todayString } from "../lib/calculations";
 import type { EstimateData, CalculatedQuote } from "../lib/types";
+import { PlenoxLogo } from "../components/PlenoxLogo";
 
 const COMPANY = {
   name: "PLENOX ENTERPRISES LLP",
@@ -256,7 +257,12 @@ export function CompareQuotes() {
           <div className="solar-header text-white px-8 py-5">
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-xl font-black tracking-tight">{COMPANY.name}</h1>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                    <PlenoxLogo size={30} variant="color" />
+                  </div>
+                  <h1 className="text-xl font-black tracking-tight">{COMPANY.name}</h1>
+                </div>
                 <p className="text-orange-100 text-xs mt-0.5">LLPIN: {COMPANY.llpin} | GST: {COMPANY.gst}</p>
                 <p className="text-orange-100 text-xs">{COMPANY.address}</p>
               </div>

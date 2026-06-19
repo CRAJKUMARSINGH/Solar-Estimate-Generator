@@ -80,3 +80,14 @@
 /* Striped table rows */
 .table-row-even { background-color: hsl(40 30% 97%); }
 .table-row-odd { background-color: hsl(0 0% 100%); }
+
+/* Cover letter page break for print */
+.cover-letter-page {
+  page-break-before: always;
+}
+@media print {
+  .cover-letter-page {
+    page-break-before: always;
+    break-before: page;
+  }
+}

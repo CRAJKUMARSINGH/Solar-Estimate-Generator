@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { PlenoxLogo } from "../components/PlenoxLogo";
 
 const COMPANY = {
   name: "PLENOX ENTERPRISES LLP",
@@ -230,9 +231,7 @@ export function BillInvoice() {
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L13.5 8.5H20L14.5 12.5L16.5 19L12 15L7.5 19L9.5 12.5L4 8.5H10.5L12 2Z" />
-                  </svg>
+                  <PlenoxLogo size={30} variant="color" />
                 </div>
                 <div>
                   <h1 className="text-xl font-black">{COMPANY.name}</h1>

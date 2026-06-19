@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { PlenoxLogo } from "../components/PlenoxLogo";
 
 const COMPANY = {
   name: "PLENOX ENTERPRISES LLP",
@@ -131,10 +132,17 @@ export function ApplicationForm() {
         <div className="solar-header text-white px-8 py-5">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-xs text-orange-100 font-semibold uppercase tracking-wider mb-1">Application Form</p>
-              <h2 className="text-xl font-black">PM सूर्य घर: मुफ्त बिजली योजना</h2>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                  <PlenoxLogo size={30} variant="color" />
+                </div>
+                <div>
+                  <p className="text-xs text-orange-100 font-semibold uppercase tracking-wider">Application Form</p>
+                  <h2 className="text-xl font-black">PM सूर्य घर: मुफ्त बिजली योजना</h2>
+                </div>
+              </div>
               <p className="text-sm text-orange-100 mt-1">PM Surya Ghar: Muft Bijlee Yojana – आवेदन पत्र</p>
-              <p className="text-xs text-orange-200 mt-2">(भारत सरकार – नवीन और नवीकरणीय ऊर्जा मंत्रालय)</p>
+              <p className="text-xs text-orange-200 mt-1">(भारत सरकार – नवीन और नवीकरणीय ऊर्जा मंत्रालय)</p>
             </div>
             <div className="text-right">
               <div className="bg-white/20 rounded-xl px-4 py-3 text-sm">
