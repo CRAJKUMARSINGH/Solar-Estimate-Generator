@@ -88,6 +88,28 @@ function newItem(): LineItem {
   return { id: Math.random().toString(36).slice(2), description: "", hsnCode: "", unit: "Nos", qty: 1, rate: 0 };
 }
 
+function mkRow(description: string, hsnCode: string, unit: string, qty: number, rate: number): LineItem {
+  return { id: Math.random().toString(36).slice(2), description, hsnCode, unit, qty, rate };
+}
+
+function standardBOM(): LineItem[] {
+  return [
+    mkRow("Solar PV Module – Mono PERC / Bifacial TOPCon",  "85414011", "Nos",  6,   28000),
+    mkRow("Solar Grid-Tie String Inverter",                  "85044090", "Nos",  1,   35000),
+    mkRow("GI Mounting Structure (Rooftop – RCC)",           "73089090", "Set",  3,    8000),
+    mkRow("DC Cable – Solar Grade 4 sq.mm (Red/Black)",      "85444290", "Mtr", 30,      80),
+    mkRow("AC Cable – Copper 6 sq.mm",                       "85444290", "Mtr", 20,     100),
+    mkRow("ACDB Box with MCB & SPD",                         "85369090", "Set",  1,    3500),
+    mkRow("DCDB Box with Fuse Holder & SPD",                 "85369090", "Set",  1,    3500),
+    mkRow("Earthing Kit – Copper Plate Type",                "85359000", "Set",  2,    5000),
+    mkRow("Lightning Arrester – Class C",                    "85359000", "Nos",  1,    6000),
+    mkRow("Net Meter – Bi-directional",                      "90281010", "Nos",  1,    8000),
+    mkRow("Conduit Pipe, MC4 Connectors & Accessories",      "39172100", "L.S.", 1,    2000),
+    mkRow("Installation & Commissioning Charges",            "998714",   "kW",   3,    5000),
+    mkRow("Transportation & Handling Charges",               "996511",   "L.S.", 1,    2000),
+  ];
+}
+
 export function BillInvoice() {
   const [bill, setBill] = useState<BillData>({
     invoiceNo: genInvoiceNo(),
@@ -105,7 +127,7 @@ export function BillInvoice() {
     poNumber: "",
     paymentTerms: "Net 30 Days",
     gstPercent: 12,
-    items: [newItem()],
+    items: standardBOM(),
     remarks: "",
     bankName: "Bank of Baroda",
     accountNo: "123456789012",
@@ -371,10 +393,14 @@ export function BillInvoice() {
           </div>
 
           {/* Add row button */}
-          <div className="no-print mt-3 flex gap-2">
+          <div className="no-print mt-3 flex gap-2 flex-wrap">
             <button onClick={addItem}
               className="text-sm px-4 py-2 border border-dashed border-orange-300 rounded-lg text-orange-600 hover:bg-orange-50 transition-colors">
               + Add Row
+            </button>
+            <button onClick={() => setBill(b => ({ ...b, items: standardBOM() }))}
+              className="text-sm px-4 py-2 border border-dashed border-blue-300 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors">
+              ↺ Reset to Standard Solar BOM
             </button>
           </div>
         </div>
