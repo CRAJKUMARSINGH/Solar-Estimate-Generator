@@ -1,45 +1,49 @@
-# [Project name]
+# Plenox Enterprises LLP — Solar Estimate Generator
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A professional solar quotation generator for PLENOX ENTERPRISES LLP. Fill in customer details, system specs, and pricing to produce a print-ready estimate with PM Surya Ghar subsidy calculation.
 
 ## Run & Operate
 
+- `pnpm --filter @workspace/solar-estimator run dev` — run the Solar Estimator frontend
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend: React + Vite (artifacts/solar-estimator)
+- Styling: Tailwind CSS v4
+- No backend required — all calculations are client-side
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/solar-estimator/src/lib/types.ts` — all data type definitions
+- `artifacts/solar-estimator/src/lib/calculations.ts` — solar calculation logic (subsidy, savings, payback)
+- `artifacts/solar-estimator/src/components/EstimateForm.tsx` — 3-tab input form
+- `artifacts/solar-estimator/src/components/QuoteOutput.tsx` — printable quotation document
 
-## Architecture decisions
+## Company Details (hardcoded in QuoteOutput.tsx)
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- **Name:** PLENOX ENTERPRISES LLP
+- **LLPIN:** ACX-0404
+- **GST:** 08ABJFP2658K1ZP
+- **Email:** vproyalenterprisesllp@gmail.com
+- **Address:** V.P New Bustand Arthuna, Tehsils Arthuna, Banswara, Rajasthan – 327032
+- **Vishal Panchal:** +91 96601 81211
+- **Prince Panchal:** +91 97727 13293
 
-## Product
+## Features
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Customer info + system specs + pricing tabs
+- Auto-calculates panel count from kW + Wattage
+- PM Surya Ghar Muft Bijlee Yojana central subsidy (₹30k/kW up to 2kW, ₹18k for 3rd kW, capped at ₹78k)
+- Bill of Materials table with all components
+- Annual generation, savings, payback period, CO2 saved
+- Print/PDF via browser print dialog
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Company: PLENOX ENTERPRISES LLP (ACX-0404, GST 08ABJFP2658K1ZP)
+- Partners: Vishal Panchal +91 96601 81211, Prince Panchal +91 97727 13293
+- Email: vproyalenterprisesllp@gmail.com
+- Solar focus: Rajasthan (5.5 peak sun hours used in calculations)

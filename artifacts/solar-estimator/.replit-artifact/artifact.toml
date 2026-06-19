@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Solar Estimate Generator"
+version = "1.0.0"
+id = "artifacts/solar-estimator"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21681
+
+[services.development]
+run = "pnpm --filter @workspace/solar-estimator run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/solar-estimator", "run", "build" ]
+publicDir = "artifacts/solar-estimator/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21681"
+BASE_PATH = "/"
