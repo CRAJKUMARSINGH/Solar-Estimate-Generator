@@ -5,7 +5,7 @@ const COMPANY = {
   name: "PLENOX ENTERPRISES LLP",
   gst: "08ABJFP2658K1ZP",
   llpin: "ACX-0404",
-  address: "V.P New Bustand Arthuna, Tehsils Arthuna, Banswara, Rajasthan - 327032",
+  address: "V.P. New Bus Stand Arthuna, Tehsil- Arthuna, Banswara, Rajasthan - 327032",
   email: "vproyalenterprisesllp@gmail.com",
   vishal: "+91 96601 81211",
   prince: "+91 97727 13293",

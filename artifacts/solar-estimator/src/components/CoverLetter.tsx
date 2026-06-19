@@ -8,7 +8,7 @@ const COMPANY = {
   llpin: "ACX-0404",
   gst: "08ABJFP2658K1ZP",
   email: "vproyalenterprisesllp@gmail.com",
-  address1: "V.P New Bustand Arthuna, Tehsils Arthuna",
+  address1: "V.P. New Bus Stand Arthuna, Tehsil- Arthuna",
   address2: "Banswara, Rajasthan – 327032",
   partners: [
     { name: "Vishal Panchal", phone: "+91 96601 81211", designation: "Designated Partner" },

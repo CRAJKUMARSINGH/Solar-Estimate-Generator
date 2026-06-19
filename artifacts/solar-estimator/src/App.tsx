@@ -224,7 +224,7 @@ export default function App() {
 
       <footer className="no-print text-center py-6 text-xs text-gray-400 border-t border-orange-100 mt-8">
         <p>PLENOX ENTERPRISES LLP &nbsp;|&nbsp; LLPIN: ACX-0404 &nbsp;|&nbsp; GST: 08ABJFP2658K1ZP</p>
-        <p className="mt-1">V.P New Bustand Arthuna, Banswara, Rajasthan - 327032</p>
+        <p className="mt-1">V.P. New Bus Stand Arthuna, Tehsil- Arthuna, Banswara, Rajasthan - 327032</p>
       </footer>
     </div>
   );

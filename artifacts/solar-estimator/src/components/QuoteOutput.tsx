@@ -12,7 +12,7 @@ const COMPANY = {
   llpin: "ACX-0404",
   gst: "08ABJFP2658K1ZP",
   email: "vproyalenterprisesllp@gmail.com",
-  address1: "V.P New Bustand Arthuna, Tehsils Arthuna",
+  address1: "V.P. New Bus Stand Arthuna, Tehsil- Arthuna",
   address2: "Banswara, Rajasthan – 327032",
   address1Hi: "वी.पी. न्यू बस स्टैंड अर्थुना, तहसील अर्थुना",
   address2Hi: "बाँसवाड़ा, राजस्थान – 327032",
