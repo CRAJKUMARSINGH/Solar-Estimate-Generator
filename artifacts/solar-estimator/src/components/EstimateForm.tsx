@@ -7,6 +7,77 @@ interface Props {
   onGenerate: (data: EstimateData) => void;
 }
 
+type TemplateSystemPatch = Partial<EstimateData["system"]>;
+type TemplatePricingPatch = Partial<EstimateData["pricing"]>;
+
+interface QuoteTemplate {
+  brand: string;
+  systemType: "On-Grid" | "Off-Grid" | "Hybrid";
+  colorKey: "blue" | "green" | "orange";
+  system: TemplateSystemPatch;
+  pricing: TemplatePricingPatch;
+}
+
+const TEMPLATES: QuoteTemplate[] = [
+  // ─── Tata Power Solar ───────────────────────────────────────────────
+  {
+    brand: "Tata Power Solar", systemType: "On-Grid", colorKey: "blue",
+    system: { panelType: "Bifacial TOPCon", panelWattage: 545, inverterType: "String Inverter", inverterBrand: "Tata Power Solar", batteryIncluded: false, batteryCapacityKWh: 0, netMeter: true, lightning: true },
+    pricing: { panelRatePerWatt: 32, inverterRate: 38000, batteryRate: 0, installationRate: 5500 },
+  },
+  {
+    brand: "Tata Power Solar", systemType: "Off-Grid", colorKey: "blue",
+    system: { panelType: "Bifacial TOPCon", panelWattage: 545, inverterType: "Hybrid Inverter", inverterBrand: "Tata Power Solar", batteryIncluded: true, batteryCapacityKWh: 10, netMeter: false, lightning: true },
+    pricing: { panelRatePerWatt: 32, inverterRate: 55000, batteryRate: 14000, installationRate: 6000 },
+  },
+  {
+    brand: "Tata Power Solar", systemType: "Hybrid", colorKey: "blue",
+    system: { panelType: "Bifacial TOPCon", panelWattage: 545, inverterType: "Hybrid Inverter", inverterBrand: "Tata Power Solar", batteryIncluded: true, batteryCapacityKWh: 10, netMeter: true, lightning: true },
+    pricing: { panelRatePerWatt: 32, inverterRate: 55000, batteryRate: 14000, installationRate: 6000 },
+  },
+  // ─── Adani Solar ────────────────────────────────────────────────────
+  {
+    brand: "Adani Solar", systemType: "On-Grid", colorKey: "green",
+    system: { panelType: "Mono PERC", panelWattage: 540, inverterType: "String Inverter", inverterBrand: "Adani Solar", batteryIncluded: false, batteryCapacityKWh: 0, netMeter: true, lightning: false },
+    pricing: { panelRatePerWatt: 30, inverterRate: 35000, batteryRate: 0, installationRate: 5000 },
+  },
+  {
+    brand: "Adani Solar", systemType: "Off-Grid", colorKey: "green",
+    system: { panelType: "Mono PERC", panelWattage: 540, inverterType: "Hybrid Inverter", inverterBrand: "Adani Solar", batteryIncluded: true, batteryCapacityKWh: 10, netMeter: false, lightning: false },
+    pricing: { panelRatePerWatt: 30, inverterRate: 48000, batteryRate: 13000, installationRate: 5500 },
+  },
+  {
+    brand: "Adani Solar", systemType: "Hybrid", colorKey: "green",
+    system: { panelType: "Mono PERC", panelWattage: 540, inverterType: "Hybrid Inverter", inverterBrand: "Adani Solar", batteryIncluded: true, batteryCapacityKWh: 10, netMeter: true, lightning: false },
+    pricing: { panelRatePerWatt: 30, inverterRate: 48000, batteryRate: 13000, installationRate: 5500 },
+  },
+  // ─── Waaree / Vikram (Other) ─────────────────────────────────────────
+  {
+    brand: "Waaree / Vikram", systemType: "On-Grid", colorKey: "orange",
+    system: { panelType: "Mono PERC", panelWattage: 540, inverterType: "String Inverter", inverterBrand: "Growatt", batteryIncluded: false, batteryCapacityKWh: 0, netMeter: true, lightning: false },
+    pricing: { panelRatePerWatt: 28, inverterRate: 32000, batteryRate: 0, installationRate: 5000 },
+  },
+  {
+    brand: "Waaree / Vikram", systemType: "Off-Grid", colorKey: "orange",
+    system: { panelType: "Mono PERC", panelWattage: 540, inverterType: "Hybrid Inverter", inverterBrand: "Luminous", batteryIncluded: true, batteryCapacityKWh: 10, netMeter: false, lightning: false },
+    pricing: { panelRatePerWatt: 28, inverterRate: 45000, batteryRate: 12000, installationRate: 5000 },
+  },
+  {
+    brand: "Waaree / Vikram", systemType: "Hybrid", colorKey: "orange",
+    system: { panelType: "Mono PERC", panelWattage: 540, inverterType: "Hybrid Inverter", inverterBrand: "Deye", batteryIncluded: true, batteryCapacityKWh: 10, netMeter: true, lightning: false },
+    pricing: { panelRatePerWatt: 28, inverterRate: 45000, batteryRate: 12000, installationRate: 5000 },
+  },
+];
+
+const TYPE_ICON: Record<string, string> = { "On-Grid": "⚡", "Off-Grid": "🔋", "Hybrid": "🌐" };
+const TYPE_DESC: Record<string, string> = { "On-Grid": "Grid-tied, no battery", "Off-Grid": "Battery backup, no grid", "Hybrid": "Grid + Battery backup" };
+
+const COLOR_STYLES: Record<string, { card: string; badge: string; btn: string }> = {
+  blue:   { card: "border-blue-200 hover:border-blue-400 hover:bg-blue-50",   badge: "bg-blue-100 text-blue-700",   btn: "bg-blue-500 hover:bg-blue-600" },
+  green:  { card: "border-green-200 hover:border-green-400 hover:bg-green-50", badge: "bg-green-100 text-green-700", btn: "bg-green-500 hover:bg-green-600" },
+  orange: { card: "border-orange-200 hover:border-orange-400 hover:bg-orange-50", badge: "bg-orange-100 text-orange-700", btn: "bg-orange-500 hover:bg-orange-600" },
+};
+
 const defaultData = (): EstimateData => ({
   customer: {
     name: "",
@@ -60,6 +131,20 @@ const defaultData = (): EstimateData => ({
 export function EstimateForm({ onGenerate }: Props) {
   const [data, setData] = useState<EstimateData>(defaultData());
   const [activeTab, setActiveTab] = useState<"customer" | "system" | "pricing">("customer");
+  const [showTemplates, setShowTemplates] = useState(true);
+  const [activeTemplate, setActiveTemplate] = useState<string | null>(null);
+
+  const loadTemplate = (t: QuoteTemplate) => {
+    const key = `${t.brand}|${t.systemType}`;
+    setActiveTemplate(key);
+    setData(d => ({
+      ...d,
+      system: { ...d.system, ...t.system },
+      pricing: { ...d.pricing, ...t.pricing },
+    }));
+    setShowTemplates(false);
+    setActiveTab("customer");
+  };
 
   const updateCustomer = (field: keyof EstimateData["customer"], value: string) => {
     setData(d => ({ ...d, customer: { ...d.customer, [field]: value } }));
@@ -95,8 +180,69 @@ export function EstimateForm({ onGenerate }: Props) {
   const labelCls = "block text-sm font-medium text-gray-700 mb-1";
   const sectionTitle = "text-base font-semibold text-orange-700 mb-3 pb-1 border-b border-orange-100";
 
+  const brands = ["Tata Power Solar", "Adani Solar", "Waaree / Vikram"] as const;
+
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden">
+
+      {/* Template Selector */}
+      <div className="border-b border-orange-100">
+        <button
+          onClick={() => setShowTemplates(v => !v)}
+          className="w-full flex items-center justify-between px-5 py-3 text-sm font-semibold text-orange-700 hover:bg-orange-50 transition-colors"
+        >
+          <span className="flex items-center gap-2">
+            📋 Quick Templates — 9 Pre-built Quotations
+            {activeTemplate && (
+              <span className="text-xs font-normal bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
+                {activeTemplate.replace("|", " · ")} ✓
+              </span>
+            )}
+          </span>
+          <span className="text-orange-400 text-xs">{showTemplates ? "▲ Hide" : "▼ Show"}</span>
+        </button>
+
+        {showTemplates && (
+          <div className="px-5 pb-5 pt-2 bg-orange-50/40">
+            <p className="text-xs text-gray-500 mb-3">Select a brand + system type to pre-fill specs and pricing. You can adjust any value afterwards.</p>
+            {brands.map(brand => {
+              const brandTemplates = TEMPLATES.filter(t => t.brand === brand);
+              const colorKey = brandTemplates[0].colorKey;
+              const cs = COLOR_STYLES[colorKey];
+              return (
+                <div key={brand} className="mb-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">{brand}</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {brandTemplates.map(t => {
+                      const key = `${t.brand}|${t.systemType}`;
+                      const isActive = activeTemplate === key;
+                      return (
+                        <button
+                          key={key}
+                          onClick={() => loadTemplate(t)}
+                          className={`relative text-left p-3 rounded-xl border-2 transition-all ${
+                            isActive
+                              ? `${cs.btn} text-white border-transparent shadow-md`
+                              : `bg-white ${cs.card} border`
+                          }`}
+                        >
+                          <div className="text-lg leading-none mb-1">{TYPE_ICON[t.systemType]}</div>
+                          <div className={`text-xs font-bold ${isActive ? "text-white" : ""}`}>{t.systemType}</div>
+                          <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/80" : "text-gray-500"}`}>{TYPE_DESC[t.systemType]}</div>
+                          {isActive && (
+                            <span className="absolute top-1.5 right-1.5 text-[10px] bg-white/30 text-white rounded-full px-1.5 py-0.5">✓ Loaded</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       {/* Tab headers */}
       <div className="flex border-b border-orange-100">
         {tabs.map(tab => (
