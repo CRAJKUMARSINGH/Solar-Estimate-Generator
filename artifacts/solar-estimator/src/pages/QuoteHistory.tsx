@@ -21,6 +21,74 @@ function systemTypeLabel(entry: QuoteHistoryEntry): string {
   return "On-Grid";
 }
 
+// ─── Dashboard helpers ──────────────────────────────────────────────────────
+
+function buildStats(entries: QuoteHistoryEntry[]) {
+  const now = new Date();
+  const thisMonth = entries.filter(e => {
+    const d = new Date(e.savedAt);
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  });
+  const thisYear = entries.filter(e => new Date(e.savedAt).getFullYear() === now.getFullYear());
+
+  const sum = (arr: QuoteHistoryEntry[], fn: (e: QuoteHistoryEntry) => number) =>
+    arr.reduce((s, e) => s + fn(e), 0);
+
+  const avg = (arr: QuoteHistoryEntry[], fn: (e: QuoteHistoryEntry) => number) =>
+    arr.length ? sum(arr, fn) / arr.length : 0;
+
+  // Brand frequency
+  const brandCount: Record<string, number> = {};
+  entries.forEach(e => {
+    const b = e.data.system.inverterBrand;
+    brandCount[b] = (brandCount[b] ?? 0) + 1;
+  });
+  const topBrand = Object.entries(brandCount).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
+
+  // System type breakdown (all time)
+  const typeCount = { "On-Grid": 0, "Off-Grid": 0, "Hybrid": 0 };
+  entries.forEach(e => typeCount[systemTypeLabel(e) as keyof typeof typeCount]++);
+
+  // Last 6 months bar data (quote count + value)
+  const months: { label: string; key: string; count: number; value: number }[] = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const label = d.toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+    const bucket = entries.filter(e => e.savedAt.startsWith(key));
+    months.push({ label, key, count: bucket.length, value: sum(bucket, e => e.calc.netCost) });
+  }
+
+  return {
+    month: {
+      count: thisMonth.length,
+      totalNet: sum(thisMonth, e => e.calc.netCost),
+      totalGross: sum(thisMonth, e => e.calc.totalBeforeSubsidy),
+      avgKW: avg(thisMonth, e => e.data.system.systemCapacityKW),
+      subsidy: sum(thisMonth, e => e.calc.pmSubsidy),
+    },
+    year: {
+      count: thisYear.length,
+      totalNet: sum(thisYear, e => e.calc.netCost),
+      avgKW: avg(thisYear, e => e.data.system.systemCapacityKW),
+    },
+    allTime: {
+      count: entries.length,
+      totalNet: sum(entries, e => e.calc.netCost),
+      totalGross: sum(entries, e => e.calc.totalBeforeSubsidy),
+      avgKW: avg(entries, e => e.data.system.systemCapacityKW),
+      subsidy: sum(entries, e => e.calc.pmSubsidy),
+    },
+    topBrand,
+    typeCount,
+    months,
+  };
+}
+
+const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+// ────────────────────────────────────────────────────────────────────────────
+
 export function QuoteHistory({ onLoadQuote }: Props) {
   const [entries, setEntries] = useState<QuoteHistoryEntry[]>(() => loadHistory());
   const [search, setSearch] = useState("");
@@ -55,9 +123,130 @@ export function QuoteHistory({ onLoadQuote }: Props) {
   });
 
   const fmtINR = (n: number) => formatCurrency(n);
+  const stats = buildStats(entries);
+  const maxMonthCount = Math.max(...stats.months.map(m => m.count), 1);
+  const maxMonthValue = Math.max(...stats.months.map(m => m.value), 1);
+  const now = new Date();
+  const currentMonthLabel = MONTH_NAMES[now.getMonth()] + " " + now.getFullYear();
 
   return (
     <div>
+
+      {/* ── Sales Dashboard ───────────────────────────────────────────── */}
+      <div className="no-print grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+
+        {/* This Month card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-5">
+          <p className="text-xs font-bold uppercase tracking-wider text-orange-500 mb-3">📅 {currentMonthLabel}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-2xl font-black text-gray-900">{stats.month.count}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Quotes generated</p>
+            </div>
+            <div>
+              <p className="text-2xl font-black text-green-700">{stats.month.count > 0 ? fmtINR(stats.month.totalNet) : "—"}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Total net value</p>
+            </div>
+            <div>
+              <p className="text-lg font-bold text-gray-800">{stats.month.avgKW > 0 ? stats.month.avgKW.toFixed(1) + " kW" : "—"}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Avg system size</p>
+            </div>
+            <div>
+              <p className="text-lg font-bold text-blue-700">{stats.month.subsidy > 0 ? fmtINR(stats.month.subsidy) : "—"}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">PM Subsidy applied</p>
+            </div>
+          </div>
+        </div>
+
+        {/* All-time + top brand card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-5">
+          <p className="text-xs font-bold uppercase tracking-wider text-orange-500 mb-3">🏆 All Time</p>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div>
+              <p className="text-2xl font-black text-gray-900">{stats.allTime.count}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Total quotes</p>
+            </div>
+            <div>
+              <p className="text-2xl font-black text-green-700">{stats.allTime.count > 0 ? fmtINR(stats.allTime.totalNet) : "—"}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Total net value</p>
+            </div>
+            <div>
+              <p className="text-lg font-bold text-gray-800">{stats.allTime.avgKW > 0 ? stats.allTime.avgKW.toFixed(1) + " kW" : "—"}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Avg system size</p>
+            </div>
+            <div>
+              <p className="text-lg font-bold text-purple-700">{stats.topBrand}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">Most quoted brand</p>
+            </div>
+          </div>
+          {/* System type split */}
+          {stats.allTime.count > 0 && (
+            <div>
+              <p className="text-[10px] text-gray-400 mb-1.5 font-semibold uppercase">System type split</p>
+              <div className="flex gap-1 h-2 rounded-full overflow-hidden mb-1.5">
+                {stats.typeCount["On-Grid"] > 0 && (
+                  <div className="bg-blue-400 transition-all" style={{ width: `${(stats.typeCount["On-Grid"] / stats.allTime.count) * 100}%` }} />
+                )}
+                {stats.typeCount["Off-Grid"] > 0 && (
+                  <div className="bg-yellow-400 transition-all" style={{ width: `${(stats.typeCount["Off-Grid"] / stats.allTime.count) * 100}%` }} />
+                )}
+                {stats.typeCount["Hybrid"] > 0 && (
+                  <div className="bg-purple-400 transition-all" style={{ width: `${(stats.typeCount["Hybrid"] / stats.allTime.count) * 100}%` }} />
+                )}
+              </div>
+              <div className="flex gap-3 text-[10px] text-gray-500">
+                <span><span className="inline-block w-2 h-2 rounded-full bg-blue-400 mr-1" />On-Grid {stats.typeCount["On-Grid"]}</span>
+                <span><span className="inline-block w-2 h-2 rounded-full bg-yellow-400 mr-1" />Off-Grid {stats.typeCount["Off-Grid"]}</span>
+                <span><span className="inline-block w-2 h-2 rounded-full bg-purple-400 mr-1" />Hybrid {stats.typeCount["Hybrid"]}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 6-month bar chart */}
+        <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-5">
+          <p className="text-xs font-bold uppercase tracking-wider text-orange-500 mb-3">📊 Last 6 Months</p>
+          {stats.allTime.count === 0 ? (
+            <div className="flex items-center justify-center h-24 text-gray-300 text-sm">No data yet</div>
+          ) : (
+            <div className="space-y-2">
+              {stats.months.map(m => {
+                const isCurrentMonth = m.key === `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+                const barW = maxMonthCount > 0 ? Math.max((m.count / maxMonthCount) * 100, m.count > 0 ? 5 : 0) : 0;
+                return (
+                  <div key={m.key} className="flex items-center gap-2">
+                    <span className={`text-[10px] w-12 text-right font-medium flex-shrink-0 ${isCurrentMonth ? "text-orange-600" : "text-gray-400"}`}>
+                      {m.label}
+                    </span>
+                    <div className="flex-1 bg-gray-100 rounded-full h-4 relative overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${isCurrentMonth ? "bg-orange-500" : "bg-orange-300"}`}
+                        style={{ width: `${barW}%` }}
+                      />
+                    </div>
+                    <span className={`text-[10px] w-5 text-center font-bold flex-shrink-0 ${isCurrentMonth ? "text-orange-600" : "text-gray-500"}`}>
+                      {m.count}
+                    </span>
+                    {m.value > 0 && (
+                      <span className="text-[9px] text-gray-400 w-16 text-right flex-shrink-0">
+                        {fmtINR(m.value)}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {stats.year.count > 0 && (
+            <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between text-[10px] text-gray-400">
+              <span>FY {now.getFullYear()} total:</span>
+              <span className="font-bold text-gray-600">{stats.year.count} quotes · {fmtINR(stats.year.totalNet)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+      {/* ─────────────────────────────────────────────────────────────── */}
+
       {/* Toolbar */}
       <div className="no-print bg-white rounded-2xl shadow-lg border border-orange-100 p-5 mb-6">
         <div className="flex flex-wrap items-center gap-3">
