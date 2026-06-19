@@ -4,17 +4,21 @@ import { QuoteOutput } from "./components/QuoteOutput";
 import { ApplicationForm } from "./pages/ApplicationForm";
 import { BillInvoice } from "./pages/BillInvoice";
 import { CompareQuotes } from "./pages/CompareQuotes";
+import { QuoteHistory } from "./pages/QuoteHistory";
+import { saveQuote, loadHistory } from "./lib/history";
 import type { EstimateData } from "./lib/types";
 
-type Tab = "estimate" | "application" | "invoice" | "compare";
+type Tab = "estimate" | "compare" | "history" | "application" | "invoice";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("estimate");
   const [estimateData, setEstimateData] = useState<EstimateData | null>(null);
+  const [historyCount, setHistoryCount] = useState(() => loadHistory().length);
 
   const tabs: { key: Tab; label: string; icon: string; sublabel: string }[] = [
     { key: "estimate", label: "Solar Estimate", icon: "☀️", sublabel: "Quotation Generator" },
     { key: "compare", label: "Compare", icon: "⚖️", sublabel: "3-Brand Comparison" },
+    { key: "history", label: "History", icon: "🗂️", sublabel: `${historyCount} saved quotes` },
     { key: "application", label: "आवेदन पत्र", icon: "📋", sublabel: "Application Form (Hindi)" },
     { key: "invoice", label: "Bill / Invoice", icon: "🧾", sublabel: "GST Tax Invoice" },
   ];
@@ -22,6 +26,17 @@ export default function App() {
   const switchTab = (tab: Tab) => {
     setActiveTab(tab);
     if (tab !== "estimate") setEstimateData(null);
+  };
+
+  const handleGenerate = (data: EstimateData) => {
+    saveQuote(data);
+    setHistoryCount(loadHistory().length);
+    setEstimateData(data);
+  };
+
+  const handleLoadFromHistory = (data: EstimateData) => {
+    setEstimateData(data);
+    setActiveTab("estimate");
   };
 
   return (
@@ -101,12 +116,25 @@ export default function App() {
                     </div>
                   ))}
                 </div>
-                <EstimateForm onGenerate={setEstimateData} />
+                <EstimateForm onGenerate={handleGenerate} />
               </div>
             ) : (
               <QuoteOutput data={estimateData} onBack={() => setEstimateData(null)} />
             )}
           </>
+        )}
+
+        {/* === HISTORY === */}
+        {activeTab === "history" && (
+          <div>
+            <div className="no-print text-center mb-8">
+              <h2 className="text-3xl font-black text-gray-800 mb-2">🗂️ Quote History</h2>
+              <p className="text-gray-500 text-base max-w-xl mx-auto">
+                Every quote you generate is auto-saved here. Search by customer name, phone, city, or quote number. Load any past quote to reprint or share.
+              </p>
+            </div>
+            <QuoteHistory onLoadQuote={handleLoadFromHistory} />
+          </div>
         )}
 
         {/* === COMPARE 3 BRANDS === */}
