@@ -3,9 +3,10 @@ import { EstimateForm } from "./components/EstimateForm";
 import { QuoteOutput } from "./components/QuoteOutput";
 import { ApplicationForm } from "./pages/ApplicationForm";
 import { BillInvoice } from "./pages/BillInvoice";
+import { CompareQuotes } from "./pages/CompareQuotes";
 import type { EstimateData } from "./lib/types";
 
-type Tab = "estimate" | "application" | "invoice";
+type Tab = "estimate" | "application" | "invoice" | "compare";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("estimate");
@@ -13,6 +14,7 @@ export default function App() {
 
   const tabs: { key: Tab; label: string; icon: string; sublabel: string }[] = [
     { key: "estimate", label: "Solar Estimate", icon: "☀️", sublabel: "Quotation Generator" },
+    { key: "compare", label: "Compare", icon: "⚖️", sublabel: "3-Brand Comparison" },
     { key: "application", label: "आवेदन पत्र", icon: "📋", sublabel: "Application Form (Hindi)" },
     { key: "invoice", label: "Bill / Invoice", icon: "🧾", sublabel: "GST Tax Invoice" },
   ];
@@ -105,6 +107,34 @@ export default function App() {
               <QuoteOutput data={estimateData} onBack={() => setEstimateData(null)} />
             )}
           </>
+        )}
+
+        {/* === COMPARE 3 BRANDS === */}
+        {activeTab === "compare" && (
+          <div>
+            <div className="no-print text-center mb-8">
+              <h2 className="text-3xl font-black text-gray-800 mb-2">⚖️ Brand Comparison</h2>
+              <p className="text-gray-500 text-base max-w-xl mx-auto">
+                Compare Tata Power Solar, Adani Solar, and Waaree/Vikram side-by-side for the same system size and type. Print or share with customers.
+              </p>
+            </div>
+            <div className="no-print grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              {[
+                { icon: "🏷️", title: "3 Brands at Once", desc: "Tata · Adani · Waaree/Vikram with real pricing in one sheet" },
+                { icon: "📊", title: "Full Breakdown", desc: "Panel cost, inverter, battery, GST, subsidy, payback — all compared" },
+                { icon: "🖨️", title: "Print-Ready", desc: "Professional comparison sheet for customer presentations" },
+              ].map(c => (
+                <div key={c.title} className="bg-white rounded-xl border border-orange-100 shadow-sm px-5 py-4 flex gap-4 items-start">
+                  <span className="text-2xl">{c.icon}</span>
+                  <div>
+                    <p className="font-bold text-gray-800 text-sm">{c.title}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{c.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <CompareQuotes />
+          </div>
         )}
 
         {/* === APPLICATION FORM (Hindi) === */}
