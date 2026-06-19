@@ -11,7 +11,7 @@ const COMPANY = {
   bank: {
     accountHolder: "PLENOX ENTERPRISES LLP",
     bankName: "Bank of Baroda",
-    accountNo: "——————————",
+    accountNo: "123456789012",
     ifscCode: "BARB0GARHIX",
     branch: "Garhi Branch, Banswara, Rajasthan",
   },

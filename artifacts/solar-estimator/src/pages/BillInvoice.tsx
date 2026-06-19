@@ -108,8 +108,8 @@ export function BillInvoice() {
     items: [newItem()],
     remarks: "",
     bankName: "Bank of Baroda",
-    accountNo: "",
-    ifscCode: "",
+    accountNo: "123456789012",
+    ifscCode: "BARB0GARHIX",
     accountHolder: COMPANY.name,
     amountPaid: 0,
   });
