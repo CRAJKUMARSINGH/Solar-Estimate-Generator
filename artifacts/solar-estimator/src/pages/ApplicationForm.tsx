@@ -8,6 +8,13 @@ const COMPANY = {
   email: "vproyalenterprisesllp@gmail.com",
   vishal: "+91 96601 81211",
   prince: "+91 97727 13293",
+  bank: {
+    accountHolder: "PLENOX ENTERPRISES LLP",
+    bankName: "State Bank of India (SBI)",
+    accountNo: "——————————",
+    ifscCode: "——————",
+    branch: "Arthuna Branch, Banswara, Rajasthan",
+  },
 };
 
 interface AppForm {
@@ -258,8 +265,11 @@ export function ApplicationForm() {
                 </select>
               </div>
               <div>
-                <label className={labelCls}>उपभोक्ता संख्या / Consumer No. *</label>
-                <input className={inputCls} placeholder="बिजली बिल पर अंकित नंबर" value={form.consumerNo}
+                <label className={labelCls}>
+                  K-Number (AVVNL) / उपभोक्ता संख्या *
+                  <span className="ml-1 text-xs text-orange-500 font-normal">— बिजली बिल पर "K" से शुरू</span>
+                </label>
+                <input className={inputCls} placeholder="जैसे: K123456789 (बिजली बिल पर अंकित)" value={form.consumerNo}
                   onChange={e => update("consumerNo", e.target.value)} />
               </div>
               <div>
@@ -389,6 +399,32 @@ export function ApplicationForm() {
                 ✅ सभी आवश्यक दस्तावेज़ उपलब्ध हैं। आवेदन के लिए तैयार।
               </div>
             )}
+          </div>
+
+          {/* Company Bank Details */}
+          <div>
+            <p className={secTitle}>8. भुगतान हेतु कंपनी बैंक विवरण / Company Bank Details (for Payment)</p>
+            <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                {[
+                  ["खाताधारक / Account Holder", COMPANY.bank.accountHolder],
+                  ["बैंक / Bank Name", COMPANY.bank.bankName],
+                  ["खाता संख्या / Account No.", COMPANY.bank.accountNo],
+                  ["IFSC कोड / IFSC Code", COMPANY.bank.ifscCode],
+                  ["शाखा / Branch", COMPANY.bank.branch],
+                  ["GSTIN", COMPANY.gst],
+                ].map(([label, val]) => (
+                  <div key={label} className="flex gap-2">
+                    <span className="text-gray-500 text-xs w-40 flex-shrink-0">{label}:</span>
+                    <span className="font-semibold text-gray-800 text-xs">{val}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-red-600 mt-3 font-medium">
+                ⚠️ भुगतान NEFT/RTGS/UPI द्वारा करें। चेक "PLENOX ENTERPRISES LLP" के नाम पर जारी करें।
+                Payment via NEFT/RTGS/UPI or cheque in favour of "PLENOX ENTERPRISES LLP".
+              </p>
+            </div>
           </div>
 
           {/* Declaration */}
