@@ -3,6 +3,7 @@ import type { EstimateData } from "../lib/types";
 import { calculateQuote, formatCurrency, formatNumber } from "../lib/calculations";
 import { PlenoxLogo } from "./PlenoxLogo";
 import { CoverLetter } from "./CoverLetter";
+import { DetailedBilingualQuote } from "./DetailedBilingualQuote";
 
 const COMPANY = {
   name: "PLENOX ENTERPRISES LLP",
@@ -32,6 +33,7 @@ interface Props {
 export function QuoteOutput({ data, onBack }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
   const [showCoverLetter, setShowCoverLetter] = useState(false);
+  const [showDetailedQuote, setShowDetailedQuote] = useState(false);
   const quote = calculateQuote(data);
   const { customer, system } = data;
 
@@ -178,8 +180,19 @@ export function QuoteOutput({ data, onBack }: Props) {
           </svg>
           {showCoverLetter ? "Hide Cover Letter" : "Cover Letter"}
         </button>
+        <button
+          onClick={() => setShowDetailedQuote(v => !v)}
+          className={`px-5 py-2 text-sm rounded-lg font-semibold flex items-center gap-2 transition-colors ${showDetailedQuote ? "bg-purple-600 text-white hover:bg-purple-700" : "border border-purple-400 text-purple-600 hover:bg-purple-50"}`}>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          </svg>
+          {showDetailedQuote ? "Hide Bilingual Quote" : "Detailed Bilingual Quote"}
+        </button>
         <span className="text-xs text-gray-400">Opens WhatsApp with ready message</span>
       </div>
+
+      {/* Detailed Bilingual Quotation */}
+      {showDetailedQuote && <DetailedBilingualQuote data={data} calc={quote} />}
 
       {/* Cover Letter */}
       {showCoverLetter && <CoverLetter data={data} calc={quote} />}
