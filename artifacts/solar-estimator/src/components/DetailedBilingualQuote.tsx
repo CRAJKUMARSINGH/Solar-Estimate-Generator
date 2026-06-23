@@ -310,6 +310,37 @@ export function DetailedBilingualQuote({ data, calc }: Props) {
         </div>
       </div>
 
+      {/* ── BANK PAYMENT DETAILS ── */}
+      <div className="mx-8 mb-4 border border-blue-200 rounded-xl overflow-hidden">
+        <div className="px-4 py-2 text-white text-xs font-bold flex items-center gap-2" style={{ background: "#1d4ed8" }}>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+          <span>भुगतान विवरण / Payment Details — Bank Transfer</span>
+        </div>
+        <div className="px-4 py-3 bg-blue-50">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+            {[
+              ["बैंक / Bank", "Bank of Baroda"],
+              ["शाखा / Branch", "Garhi Branch"],
+              ["IFSC कोड / IFSC Code", "BARB0GARHIX"],
+              ["खाता संख्या / Account No.", "123456789012"],
+              ["खाताधारक / Account Name", "PLENOX ENTERPRISES LLP"],
+              ["खाता प्रकार / Account Type", "Current Account"],
+            ].map(([label, value]) => (
+              <div key={label} className="bg-white rounded-lg px-3 py-2 border border-blue-100">
+                <p className="text-blue-500 leading-tight">{label}</p>
+                <p className="font-bold text-blue-900 leading-tight mt-0.5 font-mono">{value}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-blue-600 mt-2">
+            ⚠️ कृपया भुगतान के बाद UTR / Transaction ID हमें WhatsApp या Email पर अवश्य भेजें।
+            &nbsp;<em>Please share UTR / Transaction ID via WhatsApp or Email after transfer.</em>
+          </p>
+        </div>
+      </div>
+
       {/* ── PM SURYA GHAR SUBSIDY SLAB BREAKDOWN ── */}
       <div className="mx-8 mb-4 border border-green-300 rounded-xl overflow-hidden" style={{ background: "#f0fdf4" }}>
         <div className="px-4 py-2 text-white text-xs font-bold flex items-center gap-2" style={{ background: "#16a34a" }}>
